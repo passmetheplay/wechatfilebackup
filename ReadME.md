@@ -7,7 +7,8 @@
 
 以下使用介绍视频：
 
-https://github.com/passmetheplay/wechatfilebackup/assets/143151096/a9c0c670-bd85-4822-b059-a897284921fc
+https://github.com/passmetheplay/wechatfilebackup/assets/143151096/5ac7c513-b854-4f98-ae6e-fbc110c4792f
+
 
 
 
