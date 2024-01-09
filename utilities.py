@@ -14,7 +14,7 @@ class Utilities:
         help_text += "3. 文件迁移\n"
         help_text += "   - 从结果中选择需迁移文件。\n"
         help_text += "   - 设置迁移目录，确保与搜索目录不同。\n"
-        help_text += "   - 如需转换.silk语音文件为.wav，勾选相应选项，并设置silk-v3-decoder目录。如果转换失败需安装ffmpeg ，并将ffmpeg 设置如path的环境变量中。\n"
+        help_text += "   - 如需转换.silk语音文件为.wav，勾选相应选项，并设置silk-v3-decoder目录。\n"
         help_text += "   - 可选删除源文件。\n\n"
         help_text += "4. 开始迁移\n"
         help_text += "   - 点击'开始迁移'，迁移选中文件。\n"
