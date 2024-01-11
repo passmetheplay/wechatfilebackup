@@ -52,6 +52,11 @@ Please download the latest version of the application from the GitHub page, inst
      3. During the installation, you may be prompted to enter a password. Enter your Mac account password.
      4. After installation, you can check if it's installed successfully by running `brew install ffmpeg`.
 
+### Future Plans
+1. Release of MacOS application package
+
+
+
 ### Help and Support
 
 If you have any questions or need technical support, please refer to the help section in the application or submit issues on the GitHub page.

@@ -55,6 +55,9 @@ https://github.com/passmetheplay/wechatfilebackup/assets/143151096/d4b1e976-6433
    4. 安装完成后，你可以通过 `brew install ffmpeg` 来检查是否安装成功。
 
 
+### 后续计划
+1. Macos应用包 release
+
 
 ### 帮助与支持
 
