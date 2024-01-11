@@ -1,5 +1,5 @@
+[中文版本](https://github.com/passmetheplay/wechatfilebackup/blob/main/ReadME.md)
 # Mac系统-微信文件搜索和迁移工具
-
 ## 简介
 
 这个工具旨在帮助用户高效地搜索和迁移存储在Mac系统中微信应用的文件。它提供了一种简便的方式来查找、筛选和迁移微信中的视频、图片和语音文件，特别适用于需要整理大量微信聊天记录中文件的用户。
