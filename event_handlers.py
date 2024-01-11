@@ -179,7 +179,7 @@ class EventHandlers:
         self.ui.btn_select_target_folder.setDisabled(True)
         self.ui.btn_open_target_folder.setDisabled(True)
         convert_silk = self.ui.convert_silk_checkbox.isChecked()
-        self.ui.migrate_thread = FileMigrateThread(self.ui.selected_files, self.ui.target_directory, self.ui.delete_source_checkbox.isChecked(), convert_silk, self.ui.silk_decoder_directory, self.ui.translate)
+        self.ui.migrate_thread = FileMigrateThread(self.ui.selected_files, self.ui.target_directory, self.ui.delete_source_checkbox.isChecked(), convert_silk, self.ui.silk_decoder_directory, self.ui.translate,self.ui.current_language)
         self.ui.migrate_thread.migration_complete.connect(self.onMigrationComplete)
         self.ui.migrate_thread.update_progress.connect(self.updateDetailedProgress)
         self.ui.migrate_thread.start()

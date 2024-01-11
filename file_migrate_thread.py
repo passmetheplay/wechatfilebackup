@@ -8,7 +8,8 @@ class FileMigrateThread(QThread):
     migration_complete = pyqtSignal()
     update_progress = pyqtSignal(int, str, int, int)
 
-    def __init__(self, selected_files, target_directory, delete_source, convert_silk=False, silk_decoder_directory=None,translate_function=None):
+    def __init__(self, selected_files, target_directory, delete_source, convert_silk=False, silk_decoder_directory=None, translate_function=None,
+                 current_language='zh'):
         super().__init__()
         self.selected_files = selected_files
         self.target_directory = target_directory
@@ -19,6 +20,7 @@ class FileMigrateThread(QThread):
         self.converted_files_count = 0
         self.category_dirs = {}  # 存储每个类别的迁移目录
         self.translate_function = translate_function
+        self.current_language = current_language  # Add current_language attribute
 
     def run(self):
         total_files = sum(len(files) for files in self.selected_files.values())
@@ -31,7 +33,11 @@ class FileMigrateThread(QThread):
 
                 total_category_files = len(files)
                 processed_category_files = 0
-                category_dir = os.path.join(self.target_directory, f"{category}_back_{datetime.now().strftime('%Y%m%d_%H%M%S')}")
+                if self.current_language == 'en':
+                    category_name = self.translate_function(category)  # Translate category to Chinese
+                else:
+                    category_name = category  # Use category name as is for English
+                category_dir = os.path.join(self.target_directory, f"{category_name}_back_{datetime.now().strftime('%Y%m%d_%H%M%S')}")
                 self.category_dirs[category] = category_dir  # 存储目录路径
                 print(f"为 {category} 创建目录：{category_dir}")
                 os.makedirs(category_dir, exist_ok=True)
