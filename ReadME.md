@@ -1,4 +1,4 @@
-[中文版本](https://github.com/passmetheplay/wechatfilebackup/blob/main/ReadME.md)
+[English Version](https://github.com/passmetheplay/wechatfilebackup/blob/main/ReadME_en.md)
 # Mac系统-微信文件搜索和迁移工具
 ## 简介
 

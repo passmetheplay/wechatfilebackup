@@ -1,4 +1,4 @@
-[English version](https://github.com/passmetheplay/wechatfilebackup/blob/main/ReadME_en.md)
+[中文版本](https://github.com/passmetheplay/wechatfilebackup/blob/main/ReadME.md)
 # MacOS - WeChat File Search and Migration Tool
 
 ## Introduction
