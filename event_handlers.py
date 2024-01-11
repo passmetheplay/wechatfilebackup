@@ -10,22 +10,25 @@ class EventHandlers:
         self.ui = ui  # 主窗口UI的引用
 
     def updateDetailedProgress(self, progress, phase_description, processed, total):
-        progress_text = f"进度: {progress}% ({processed}/{total}) - {phase_description}"
+        progress_title= self.ui.translate('progress_title')
+        progress_text = f"{progress_title}: {progress}% ({processed}/{total}) - {phase_description}"
         print(progress_text)
         self.ui.detailed_progress_label.setText(progress_text)
         self.ui.progress_bar.setValue(progress)
 
 
     def setSilkDecoderDirectory(self):
-        directory = QFileDialog.getExistingDirectory(self.ui, "选择silk-v3-decoder目录")
+        directory = QFileDialog.getExistingDirectory(self.ui, self.ui.translate('set_silk_decoder_directory_dialog_title'))
         if directory:
             if os.path.exists(os.path.join(directory, "converter.sh")):
                 self.ui.silk_decoder_directory = directory
                 self.ui.config_manager.set_config('silk_decoder_directory', self.ui.silk_decoder_directory)
-                QMessageBox.information(self.ui, "设置成功", "silk-v3-decoder目录设置成功。")
+                QMessageBox.information(self.ui, self.ui.translate('set_silk_decoder_directory_success_title'), self.ui.translate('set_silk_decoder_directory_success_message'))
             else:
-                QMessageBox.warning(self.ui, "目录错误", "请选择包含converter.sh的正确silk-v3-decoder目录。")
+                QMessageBox.warning(self.ui, self.ui.translate('set_silk_decoder_directory_error_title'), self.ui.translate('set_silk_decoder_directory_error_message'))
         self.ui.checkAndUpdateSilkDecoderDirectoryLabel()
+
+
 
     def selectAllItems(self, category, state):
         self.ui.results_widgets[category].blockSignals(True)
@@ -39,14 +42,19 @@ class EventHandlers:
             else:
                 self.ui.selected_files[category].discard(file_path)
         selected_count = len(self.ui.selected_files[category])
-        self.ui.selected_counts_labels[category].setText(f"已选: {selected_count}")
+        selected_count_text = self.ui.translate('selected_counts_label', count=selected_count)
+        self.ui.selected_counts_labels[category].setText(selected_count_text)
         self.ui.results_widgets[category].blockSignals(False)
 
     def selectFolder(self):
-        directory = QFileDialog.getExistingDirectory(self.ui, "选择文件夹")
+        directory = QFileDialog.getExistingDirectory(self.ui, self.ui.translate('select_folder_dialog_title'))
         if directory:
-            self.ui.directory_label.setText(f"选定文件夹: {directory}")
+            self.ui.directory_label.setText(self.ui.translate('selected_directory_label',directory=directory))
             self.ui.selected_directory = directory
+
+
+
+
 
     def startSearch(self):
         print("开始搜索...")
@@ -56,7 +64,7 @@ class EventHandlers:
         self.ui.delete_source_checkbox.setDisabled(True)
         for widget in self.ui.results_widgets.values():
             widget.clear()
-        self.ui.search_thread = FileSearchThread(self.ui.selected_directory, self.ui.categories)
+        self.ui.search_thread = FileSearchThread(self.ui.selected_directory, self.ui.categories,self.ui.translate)
         self.ui.search_thread.update_category.connect(self.updateResults)
         self.ui.search_thread.update_progress.connect(self.updateDetailedProgress)
         self.ui.search_thread.search_finished.connect(self.onSearchFinished)
@@ -69,8 +77,15 @@ class EventHandlers:
         self.ui.delete_source_checkbox.setDisabled(False)
         self.ui.progress_bar.setValue(100)
         self.updateLabelColors()
-        file_counts_message = "\n".join([f"{category}: {count}" for category, count in self.ui.searched_files_count.items()])
-        QMessageBox.information(self.ui, "搜索完成", f"文件搜索完成。\n\n分类数量:\n{file_counts_message}")
+        # 获取文件数量信息
+        file_counts_message = "\n".join([f"{self.ui.translate(category)}: {count}" for category, count in self.ui.searched_files_count.items()])
+        # 国际化标题和消息文本
+        title = self.ui.translate('search_completed_title')
+        message = self.ui.translate('search_completed_message', count=file_counts_message)
+
+        # 弹出对话框
+        QMessageBox.information(self.ui, title, message)
+
         self.ui.searched_files_count = {category: 0 for category in self.ui.categories}
         self.resetAndCountFiles()
         self.disableResultsDisplay(False)
@@ -82,9 +97,11 @@ class EventHandlers:
             file_count = self.ui.results_widgets[category].count()
             for i in range(file_count):
                 self.ui.results_widgets[category].item(i).setCheckState(Qt.Unchecked)
-            self.ui.category_labels[category].setText(f"{category} ({file_count})")
-            self.ui.selected_counts_labels[category].setText("已选: 0")
+            category_label_text = self.ui.translate(category+"_label", count=file_count)
+            self.ui.category_labels[category].setText(category_label_text)
             self.ui.selected_files[category].clear()
+            selected_count_text = self.ui.translate('selected_counts_label', count=len(self.ui.selected_files[category]))
+            self.ui.selected_counts_labels[category].setText(selected_count_text)
 
     def toggleSelection(self, item, category):
         self.ui.results_widgets[category].blockSignals(True)
@@ -96,7 +113,8 @@ class EventHandlers:
             self.ui.selected_files[category].add(item.data(Qt.UserRole))
         self.ui.results_widgets[category].blockSignals(False)
         selected_count = len(self.ui.selected_files[category])
-        self.ui.selected_counts_labels[category].setText(f"已选: {selected_count}")
+        selected_count_text = self.ui.translate('selected_counts_label', count=selected_count)
+        self.ui.selected_counts_labels[category].setText(selected_count_text)
 
     def updateResults(self, file_batch):
         print(f"Updating results for a batch of {len(file_batch)} files.")
@@ -114,7 +132,8 @@ class EventHandlers:
             self.ui.searched_files_count[category] += 1
         for category, category_widget in self.ui.results_widgets.items():
             count = category_widget.count()
-            self.ui.category_labels[category].setText(f"{category} ({count})")
+            category_label_text = self.ui.translate(category+"_label", count=count)
+            self.ui.category_labels[category].setText(category_label_text)
             category_widget.setUpdatesEnabled(True)
 
     def selectTargetFolder(self):
@@ -122,12 +141,12 @@ class EventHandlers:
         if target_directory:
             if target_directory != self.ui.selected_directory:
                 self.ui.target_directory = target_directory
-                self.ui.target_directory_label.setText(f"迁移目标文件夹: {self.ui.target_directory}")
+                self.ui.target_directory_label.setText(self.ui.translate('target_directory_label')+target_directory)
                 self.ui.btn_migrate.setDisabled(False)
             else:
-                QMessageBox.warning(self.ui, "错误", "迁移目标文件夹不能与搜索文件夹相同，请选择不同的文件夹。")
+                QMessageBox.warning(self.ui, self.ui.translate('select_target_folder_error_title'), self.ui.translate('select_target_folder_error_message'))
         else:
-            self.ui.target_directory_label.setText("迁移目标文件夹：未选择")
+            self.ui.target_directory_label.setText(self.ui.translate('target_directory_label')+self.ui.translate('target_directory_not_set'))
 
     def openTargetFolder(self):
         if self.ui.target_directory:
@@ -141,18 +160,18 @@ class EventHandlers:
         print("开始迁移...")
         total_selected = sum(len(files) for files in self.ui.selected_files.values())
         if total_selected == 0:
-            QMessageBox.information(self.ui, "无文件", "没有选中任何文件进行迁移。")
+            QMessageBox.information(self.ui, self.ui.translate("no_files_selected_title"), self.ui.translate("no_files_selected_message"))
             return
 
         # 检查是否选择了语音文件并且勾选了转换语音选项
         convert_silk = self.ui.convert_silk_checkbox.isChecked()
         has_voice_files = bool(self.ui.selected_files['语音'])
         if convert_silk and has_voice_files and not self.ui.silk_decoder_directory:
-            QMessageBox.warning(self.ui, "设置未完成", "您选择了转换语音文件，但未设置silk-v3-decoder目录。请先设置目录。")
+            QMessageBox.warning(self.ui, self.ui.translate("silk_decoder_not_set_title"), self.ui.translate("silk_decoder_not_set_message"))
             return
 
         if self.ui.delete_source_checkbox.isChecked():
-            reply = QMessageBox.question(self.ui, "确认删除", "您确定要在迁移后删除源文件吗？", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            reply = QMessageBox.question(self.ui, self.ui.translate("confirm_delete_title"), self.ui.translate("confirm_delete_message"), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
             if reply == QMessageBox.No:
                 return
         self.disableResultsDisplay(True)
@@ -160,32 +179,34 @@ class EventHandlers:
         self.ui.btn_select_target_folder.setDisabled(True)
         self.ui.btn_open_target_folder.setDisabled(True)
         convert_silk = self.ui.convert_silk_checkbox.isChecked()
-        self.ui.migrate_thread = FileMigrateThread(self.ui.selected_files, self.ui.target_directory, self.ui.delete_source_checkbox.isChecked(), convert_silk, self.ui.silk_decoder_directory)
+        self.ui.migrate_thread = FileMigrateThread(self.ui.selected_files, self.ui.target_directory, self.ui.delete_source_checkbox.isChecked(), convert_silk, self.ui.silk_decoder_directory, self.ui.translate)
         self.ui.migrate_thread.migration_complete.connect(self.onMigrationComplete)
         self.ui.migrate_thread.update_progress.connect(self.updateDetailedProgress)
         self.ui.migrate_thread.start()
 
+
     def onMigrationComplete(self):
-        migrated_files_message = "\n".join([f"{category}: {count}" for category, count in self.ui.migrate_thread.migrated_files_count.items()])
+        migrated_files_message = "\n".join([f"{self.ui.translate(category)}: {count}" for category, count in self.ui.migrate_thread.migrated_files_count.items()])
 
         # 创建一个QLabel用于显示带颜色的转换信息
         conversion_info_label = QLabel()
-        conversion_info = ""
 
-        if self.ui.convert_silk_checkbox.isChecked():
-            total_voice_files_to_convert = len(self.ui.selected_files.get('语音', []))
-            successful_conversions = self.ui.migrate_thread.migrated_files_count.get('语音', 0)
-            failed_conversions = total_voice_files_to_convert - successful_conversions
-            conversion_info = f"需要转换的语音文件数: {total_voice_files_to_convert}, 转换成功: <span style='color: green;'>{successful_conversions}</span>"
-            if failed_conversions > 0:
-                conversion_info += f", 失败: <span style='color: red;'>{failed_conversions}</span>"
+        total_voice_files_to_convert = len(self.ui.selected_files.get('语音', []))
+        successful_conversions = self.ui.migrate_thread.migrated_files_count.get('语音', 0)
+        failed_conversions = total_voice_files_to_convert - successful_conversions
+        conversion_info = self.ui.translate('voice_conversion_info', total=total_voice_files_to_convert, success=successful_conversions)
+        if failed_conversions > 0:
+            conversion_info += self.ui.translate('voice_conversion_failed',failed=failed_conversions)
+
 
         conversion_info_label.setText(conversion_info)
 
         # 创建自定义对话框
         dialog = QMessageBox()
-        dialog.setWindowTitle("迁移完成")
-        dialog.setText(f"文件迁移完成。\n\n分类迁移文件数:\n{migrated_files_message}")
+        dialog.setWindowTitle(self.ui.translate('migration_complete_title'))
+        dialog.setText(self.ui.translate('migration_complete_message'))
+        if migrated_files_message:
+            dialog.setText(f"{self.ui.translate('migration_file_count_message')}\n{migrated_files_message}")
         if conversion_info:
             dialog.layout().addWidget(conversion_info_label, 1, 1)  # 添加到对话框布局中
         dialog.exec_()
@@ -203,6 +224,8 @@ class EventHandlers:
 
     def updateLabelColors(self):
         for category, count_label in self.ui.selected_counts_labels.items():
-            count_label.setText(f"已选: {len(self.ui.selected_files[category])}")
+
+            selected_count_text = self.ui.translate('selected_counts_label', count=len(self.ui.selected_files[category]))
+            count_label.setText(selected_count_text)
             count_label.setStyleSheet("color: green;" if self.ui.selected_files[category] else "color: black;")
 

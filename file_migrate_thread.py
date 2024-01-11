@@ -8,7 +8,7 @@ class FileMigrateThread(QThread):
     migration_complete = pyqtSignal()
     update_progress = pyqtSignal(int, str, int, int)
 
-    def __init__(self, selected_files, target_directory, delete_source, convert_silk=False, silk_decoder_directory=None):
+    def __init__(self, selected_files, target_directory, delete_source, convert_silk=False, silk_decoder_directory=None,translate_function=None):
         super().__init__()
         self.selected_files = selected_files
         self.target_directory = target_directory
@@ -18,6 +18,7 @@ class FileMigrateThread(QThread):
         self.migrated_files_count = {category: 0 for category in selected_files}
         self.converted_files_count = 0
         self.category_dirs = {}  # 存储每个类别的迁移目录
+        self.translate_function = translate_function
 
     def run(self):
         total_files = sum(len(files) for files in self.selected_files.values())
@@ -26,7 +27,8 @@ class FileMigrateThread(QThread):
         # 迁移文件
         for category, files in self.selected_files.items():
             if files:
-                phase_description = "文件迁移"
+                phase_description = self.translate_function('phase_description_migration')
+
                 total_category_files = len(files)
                 processed_category_files = 0
                 category_dir = os.path.join(self.target_directory, f"{category}_back_{datetime.now().strftime('%Y%m%d_%H%M%S')}")
@@ -52,7 +54,7 @@ class FileMigrateThread(QThread):
 
         # 转换语音文件
         if self.convert_silk and '语音' in self.selected_files:
-            phase_description = "语音转换"
+            phase_description = self.translate_function('phase_description_audioconvert')
             total_voice_files = len(self.selected_files['语音'])
             processed_voice_files = 0
             voice_category_dir = self.category_dirs.get('语音')  # 获取语音类别的迁移目录
