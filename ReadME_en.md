@@ -8,7 +8,11 @@ This tool is designed to help users efficiently search and migrate files stored 
 
 Here is an introduction video:
 
-https://github.com/passmetheplay/wechatfilebackup/assets/143151096/d4b1e976-6433-47fb-b287-3b2f5b9b5802
+
+
+https://github.com/passmetheplay/wechatfilebackup/assets/143151096/0ebbcd37-ca8f-4c52-866c-05ffa1c5044d
+
+
 
 
 ## Problems Solved
