@@ -31,7 +31,7 @@
   "语音": "Voices",
   "progress_title": "Progress",
   "select_folder_dialog_title": "Select Folder",
-  "selected_directory_label": "Selected Directory: {directory}",
+  "selected_directory_label": "Selected Directory: ",
   "phase_description_search": "file search",
   "phase_description_migration": "file migration",
   "phase_description_audioconvert": "audio format conversion",

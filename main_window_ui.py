@@ -278,13 +278,11 @@ class MainWindowUI(QWidget):
         self.btn_migrate.setText(self.translate('btn_migrate'))
         self.convert_silk_checkbox.setText(self.translate('convert_silk_checkbox'))
         self.delete_source_checkbox.setText(self.translate('delete_source_checkbox'))
-        # self.btn_help.setText(self.translate('btn_help'))
         self.btn_select_target_folder.setText(self.translate('btn_select_target_folder'))
         self.btn_open_target_folder.setText(self.translate('btn_open_target_folder'))
         self.btn_set_silk_decoder.setText(self.translate('btn_set_silk_decoder'))
 
         # 更新标签文本
-        self.directory_label.setText(self.translate('directory_label'))
         if self.target_directory:
             self.target_directory_label.setText(self.translate('target_directory_label')+self.target_directory)
         else:
@@ -311,3 +309,4 @@ class MainWindowUI(QWidget):
         self.current_language = language
         self.translations = self.load_translations(self.current_language)
         self.updateUIText()  # 更新界面文本
+        self.checkDefaultDirectory()
