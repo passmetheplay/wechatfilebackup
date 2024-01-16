@@ -57,7 +57,7 @@ Please download the latest version of the application from the GitHub page, inst
      4. After installation, you can check if it's installed successfully by running `brew install ffmpeg`.
 
 ### Future Plans
-1. Release of MacOS application package
+1. Review feedback before deciding whether to proceed.
 
 
 
