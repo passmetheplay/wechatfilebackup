@@ -1,5 +1,6 @@
 import os
 import json
+import sys
 from pathlib import Path
 from config_manager import ConfigManager
 
@@ -60,7 +61,8 @@ class MainWindowUI(QWidget):
         self.toolbar.addAction(spacerAction)
 
         # 添加帮助按钮到工具栏
-        help_action = QAction(QIcon('help.png'), 'Help', self)
+        help_icon_path = resource_path('help.png')
+        help_action = QAction(QIcon(help_icon_path), 'Help', self)
         help_action.triggered.connect(lambda: Utilities.showHelpDialog(self, self.current_language))
         self.toolbar.addAction(help_action)
 
@@ -242,13 +244,13 @@ class MainWindowUI(QWidget):
 
         self.silk_decoder_directory_label.setText(base_text + directory_text)
 
-    def load_translations(self,locale):
+    def load_translations(self, locale):
         if locale == "zh":
-            file_name = "translations/zh_CN.json"
+            file_name = resource_path("translations/zh_CN.json")
         elif locale == "en":
-            file_name = "translations/en_US.json"
+            file_name = resource_path("translations/en_US.json")
         else:
-            file_name = f"translations/{locale}.json"
+            file_name = resource_path(f"translations/{locale}.json")
         try:
             with open(file_name, "r", encoding="utf-8") as file:
                 return json.load(file)
@@ -310,3 +312,13 @@ class MainWindowUI(QWidget):
         self.translations = self.load_translations(self.current_language)
         self.updateUIText()  # 更新界面文本
         self.checkDefaultDirectory()
+
+def resource_path(relative_path):
+    """ 获取资源的绝对路径，用于打包或直接运行 """
+    if getattr(sys, 'frozen', False):
+        # 如果程序是打包运行的，使用这个路径
+        base_path = sys._MEIPASS
+    else:
+        # 否则使用这个路径
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
