@@ -60,7 +60,7 @@ https://github.com/passmetheplay/wechatfilebackup/assets/143151096/5b7721bd-2f72
 
 
 ### 后续计划
-1. Macos应用包 release
+1. 看反馈后决定是否继续
 
 
 ### 帮助与支持
